@@ -78,6 +78,7 @@
 *.ttf binary
 *.otf binary
 *.tt binary
+Library/ArtifactDB binary
 Library/**/*.fbx filter=lfs diff=lfs merge=lfs -text
 Library/**/*.psd filter=lfs diff=lfs merge=lfs -text
 Library/**/*.png filter=lfs diff=lfs merge=lfs -text
