@@ -13,12 +13,18 @@ public class PlayerController : MonoBehaviour
     private bool jumpInput;
 
     // Movement settings
-    public float moveSpeed = 4f;
+    [Header("Movement")]
+    public float maxSpeed = 4f;
+    public float acceleration = 12f;
+    public float deceleration = 16f;
     public float rotationSpeed = 10f;
 
+    private Vector3 currentVelocity;
+
     // Camera settings
+    [Header("Camera")]
     public float cameraDistance = 4f;
-    public float cameraRotateSpeed = 90f; // Degrees per second
+    public float cameraRotateSpeed = 90f;
     public float cameraSmoothSpeed = 10f;
     public float minPitch = -30f;
     public float maxPitch = 60f;
@@ -33,18 +39,15 @@ public class PlayerController : MonoBehaviour
         cameraYaw = transform.eulerAngles.y;
     }
 
-    // Move input (WASD / ZQSD)
     void OnMove(InputValue value) => movementInput = value.Get<Vector2>();
-
-    // Look input (mouse or arrow keys)
     void OnLook(InputValue value) => lookInput = value.Get<Vector2>();
-
-    // Jump input (spacebar)
     void OnJump(InputValue value) => jumpInput = value.isPressed;
+
+    void OnSprint(InputValue value) => maxSpeed = value.isPressed ? 20f : 4f;
 
     void Update()
     {
-        if (mainCamera == null) return;
+        if (!mainCamera) return;
 
         HandleCameraRotation();
         HandleMovement();
@@ -54,14 +57,12 @@ public class PlayerController : MonoBehaviour
 
     void LateUpdate()
     {
-        if (mainCamera == null) return;
-
+        if (!mainCamera) return;
         UpdateCameraPosition();
     }
 
     private void HandleCameraRotation()
     {
-        // Update yaw and pitch based on input
         cameraYaw += lookInput.x * cameraRotateSpeed * Time.deltaTime;
         cameraPitch -= lookInput.y * cameraRotateSpeed * Time.deltaTime;
         cameraPitch = Mathf.Clamp(cameraPitch, minPitch, maxPitch);
@@ -69,7 +70,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovement()
     {
-        // Camera-relative movement
+        // Camera-relative directions
         Vector3 forward = mainCamera.transform.forward;
         forward.y = 0;
         forward.Normalize();
@@ -78,20 +79,30 @@ public class PlayerController : MonoBehaviour
         right.y = 0;
         right.Normalize();
 
-        Vector3 move = forward * movementInput.y + right * movementInput.x;
+        Vector3 inputDirection = forward * movementInput.y + right * movementInput.x;
+        inputDirection = inputDirection.sqrMagnitude > 1f ? inputDirection.normalized : inputDirection;
 
-        // Normalize diagonal movement
-        if (move.sqrMagnitude > 1f)
-            move.Normalize();
+        Vector3 targetVelocity = inputDirection * maxSpeed;
 
-        // Apply movement
-        transform.position += move * moveSpeed * Time.deltaTime;
+        // Accelerate or decelerate
+        float accelRate = inputDirection.sqrMagnitude > 0.01f ? acceleration : deceleration;
+        currentVelocity = Vector3.MoveTowards(
+            currentVelocity,
+            targetVelocity,
+            accelRate * Time.deltaTime
+        );
 
-        // Rotate character toward movement
-        if (move.sqrMagnitude > 0.001f)
+        transform.position += currentVelocity * Time.deltaTime;
+
+        // Rotate toward movement direction
+        if (currentVelocity.sqrMagnitude > 0.001f)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(move);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            Quaternion targetRotation = Quaternion.LookRotation(currentVelocity.normalized);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime
+            );
         }
     }
 
@@ -99,8 +110,8 @@ public class PlayerController : MonoBehaviour
     {
         if (jumpInput && IsGrounded())
         {
-            transform.position += Vector3.up * 0.5f;
-            jumpInput = false; // Reset jump input to prevent continuous jumping
+            currentVelocity.y = 15f; // Simple jump impulse
+            jumpInput = false;
         }
     }
 
@@ -111,17 +122,26 @@ public class PlayerController : MonoBehaviour
 
     private void HandleAnimation()
     {
+        // animator.SetFloat("Speed", currentVelocity.magnitude / maxSpeed);
+        // animator.SetBool("IsGrounded", IsGrounded());
         animator.SetBool("IsRunning", movementInput.sqrMagnitude > 0.001f);
         animator.SetBool("IsJumping", jumpInput);
     }
 
     private void UpdateCameraPosition()
     {
-        // Orbiting camera
-        Quaternion rotation = Quaternion.Euler(cameraPitch, cameraYaw, 0);
-        Vector3 desiredPosition = transform.position - rotation * Vector3.forward * cameraDistance + Vector3.up * 1.2f;
+        Quaternion rotation = Quaternion.Euler(cameraPitch, cameraYaw, 0f);
+        Vector3 desiredPosition =
+            transform.position
+            - rotation * Vector3.forward * cameraDistance
+            + Vector3.up * 1.2f;
 
-        mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, desiredPosition, cameraSmoothSpeed * Time.deltaTime);
+        mainCamera.transform.position = Vector3.Lerp(
+            mainCamera.transform.position,
+            desiredPosition,
+            cameraSmoothSpeed * Time.deltaTime
+        );
+
         mainCamera.transform.LookAt(transform.position + Vector3.up * 1.2f);
     }
 }
