@@ -28,18 +28,16 @@ public class PlayerController : MonoBehaviour
         transform.Translate(movementX * Time.deltaTime * 4f, 0, movementY * Time.deltaTime * 4f);
         
         // Animation control
-        bool isMoving = (movementX != 0 || movementY != 0);
-        if (animator != null)
-        {
-            animator.SetBool("isMoving", isMoving);
-        }
-        
+        bool isMoving = movementX != 0 || movementY != 0;
+        animator.SetBool("IsRunning", isMoving);
+
         // Camera follows player
         if (mainCamera != null)
         {
-            mainCamera.transform.position = transform.position + new Vector3(-3, 3, 1);
-            mainCamera.transform.LookAt(transform);
-            //  mainCamera.transform.rotation = Quaternion.Euler(15, 5, 0);
+            mainCamera.transform.position = transform.position + new Vector3(0, 3, -1);
+            // Point de visée légèrement devant et en hauteur du personnage
+            Vector3 lookAtPoint = transform.position + transform.forward * 0.8f + Vector3.up * 0.9f;
+            mainCamera.transform.LookAt(lookAtPoint);
         } else if (mainCamera == null){
             Debug.LogWarning("Main Camera not found!");
         }
