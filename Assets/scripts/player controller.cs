@@ -82,7 +82,7 @@ public class PlayerController : MonoBehaviour
             cameraForward * movementY +
             cameraRight * movementX;
 
-        transform.Translate(move * moveSpeed * Time.deltaTime, Space.Self);
+        transform.Translate(move * moveSpeed * Time.deltaTime, Space.World);
 
         // Rotate character toward movement
         if (move.sqrMagnitude > 0.001f)
