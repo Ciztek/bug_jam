@@ -7,11 +7,13 @@ public class PlayerController : MonoBehaviour
     private float movementY;
     private Camera mainCamera;
     private bool moved;
+    private Animator animator;
     
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         mainCamera = Camera.main;
+        animator = GetComponent<Animator>();
     }
 
     void OnMove(InputValue value)
@@ -24,6 +26,13 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         transform.Translate(movementX * Time.deltaTime * 4f, 0, movementY * Time.deltaTime * 4f);
+        
+        // Animation control
+        bool isMoving = (movementX != 0 || movementY != 0);
+        if (animator != null)
+        {
+            animator.SetBool("isMoving", isMoving);
+        }
         
         // Camera follows player
         if (mainCamera != null)
