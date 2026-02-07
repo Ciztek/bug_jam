@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -186,22 +187,30 @@ public class PlayerController : MonoBehaviour
     // ===== ANIMATION =====
     private void HandleAnimation()
     {
-        float planarSpeed =
-            new Vector3(currentVelocity.x, 0f, currentVelocity.z).magnitude;
+        float planarSpeed = new Vector3(currentVelocity.x, 0f, currentVelocity.z).magnitude;
+        
+        // Calculate normalized speed on a 0-2 scale:
+        // 0 = idle
+        // 0-1 = walk to run
+        // 1-2 = run to sprint
+        float normalizedSpeed;
+        
+        if (planarSpeed < 0.01f)
+        {
+            normalizedSpeed = 0f;
+        }
+        else if (sprintInput && !isIdle)
+        {
+            // Sprinting: map from walkSpeed to sprintSpeed → 1.0 to 2.0
+            normalizedSpeed = 1f + Mathf.Clamp01((planarSpeed - walkSpeed) / (sprintSpeed - walkSpeed));
+        }
+        else
+        {
+            // Walking/Running: map from 0 to walkSpeed → 0.0 to 1.0
+            normalizedSpeed = Mathf.Clamp01(planarSpeed / walkSpeed);
+        }
 
-        float maxAnimSpeed =
-            sprintInput && !isIdle ? sprintSpeed : walkSpeed;
-
-        float normalizedSpeed =
-            maxAnimSpeed > 0f ? planarSpeed / maxAnimSpeed : 0f;
-
-        // animator.SetFloat(
-        //     "Speed",
-        //     normalizedSpeed,
-        //     0.1f,
-        //     Time.deltaTime
-        // );
-
-        // animator.SetBool("IsJumping", !IsGrounded());
+        animator.SetFloat("Speed", normalizedSpeed, 0.1f, Time.deltaTime);
+        animator.SetBool("IsJumping", !IsGrounded());
     }
 }
