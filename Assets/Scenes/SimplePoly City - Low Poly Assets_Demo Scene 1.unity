@@ -21444,6 +21444,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: player
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: de13a7420582ded45a8d7d3f96889aca, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 2823775975526001648, guid: de13a7420582ded45a8d7d3f96889aca, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
@@ -27325,6 +27329,34 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7587165911498958162, guid: 65abb0f1b521f834bae80ea4c9d93734, type: 3}
+      propertyPath: m_Size.x
+      value: 2.9243622
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587165911498958162, guid: 65abb0f1b521f834bae80ea4c9d93734, type: 3}
+      propertyPath: m_Size.y
+      value: 15.871517
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587165911498958162, guid: 65abb0f1b521f834bae80ea4c9d93734, type: 3}
+      propertyPath: m_Size.z
+      value: 5.9176126
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587165911498958162, guid: 65abb0f1b521f834bae80ea4c9d93734, type: 3}
+      propertyPath: m_Center.x
+      value: -0.4499318
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587165911498958162, guid: 65abb0f1b521f834bae80ea4c9d93734, type: 3}
+      propertyPath: m_Center.y
+      value: -0.81542873
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587165911498958162, guid: 65abb0f1b521f834bae80ea4c9d93734, type: 3}
+      propertyPath: m_Center.z
+      value: 2.5139196
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587165911498958162, guid: 65abb0f1b521f834bae80ea4c9d93734, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -27335,6 +27367,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100000, guid: 65abb0f1b521f834bae80ea4c9d93734, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1202192188}
+    - targetCorrespondingSourceObject: {fileID: 100000, guid: 65abb0f1b521f834bae80ea4c9d93734, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1202192192}
   m_SourcePrefab: {fileID: 100100000, guid: 65abb0f1b521f834bae80ea4c9d93734, type: 3}
 --- !u!1001 &847187801
 PrefabInstance:
@@ -39268,6 +39303,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0e4e7f630049a344861409851e63aa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+--- !u!114 &1202192192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1202192183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8b1e934b20c4714c80b336a8c4ac894, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  showMessage: 1
+  deathMessage: GAME OVER - Tu es mort !
+  delayBeforeQuit: 2
+  interactDistance: 5
+  textHeight: 2.5
+  textSize: 0.1
+  player: {fileID: 582250607}
 --- !u!1 &1206305127 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: 31bbda51eeab02f44a8e92a7da2f5ff8, type: 3}
