@@ -4,118 +4,110 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     // Components
-    private Rigidbody rb;
     private Camera mainCamera;
     private Animator animator;
 
-    // Movement input
-    private float movementX;
-    private float movementY;
+    // Input
+    private Vector2 movementInput;
+    private Vector2 lookInput;
+
+    // Movement settings
+    public float moveSpeed = 4f;
+    public float rotationSpeed = 10f;
 
     // Camera settings
-    public float moveSpeed = 4f;
-
     public float cameraDistance = 4f;
-    public float cameraRotateSpeed = 90f;
+    public float cameraRotateSpeed = 90f; // Degrees per second
     public float cameraSmoothSpeed = 10f;
-
     public float minPitch = -30f;
     public float maxPitch = 60f;
 
-    private float cameraYaw;
+    private float cameraYaw = 0f;
     private float cameraPitch = 20f;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
         mainCamera = Camera.main;
         animator = GetComponent<Animator>();
-
         cameraYaw = transform.eulerAngles.y;
     }
 
+    // Move input (WASD / ZQSD)
     void OnMove(InputValue value)
     {
-        Vector2 movementVector = value.Get<Vector2>();
-        movementX = movementVector.x;
-        movementY = movementVector.y;
+        movementInput = value.Get<Vector2>();
+    }
+
+    // Look input (mouse or arrow keys)
+    void OnLook(InputValue value)
+    {
+        lookInput = value.Get<Vector2>();
     }
 
     void Update()
     {
-        if (Keyboard.current == null) return;
-
-        // Arrow keys control camera
-        float yawInput = 0f;
-        float pitchInput = 0f;
-
-        if (Keyboard.current.leftArrowKey.isPressed)
-            yawInput = -1f;
-        else if (Keyboard.current.rightArrowKey.isPressed)
-            yawInput = 1f;
-
-        if (Keyboard.current.upArrowKey.isPressed)
-            pitchInput = -1f;
-        else if (Keyboard.current.downArrowKey.isPressed)
-            pitchInput = 1f;
-
-        cameraYaw += yawInput * cameraRotateSpeed * Time.deltaTime;
-        cameraPitch += pitchInput * cameraRotateSpeed * Time.deltaTime;
-
-        cameraPitch = Mathf.Clamp(cameraPitch, minPitch, maxPitch);
-    }
-
-    void FixedUpdate()
-    {
         if (mainCamera == null) return;
 
-        // Movement relative to camera
-        Vector3 cameraForward = mainCamera.transform.forward;
-        cameraForward.y = 0;
-        cameraForward.Normalize();
-
-        Vector3 cameraRight = mainCamera.transform.right;
-        cameraRight.y = 0;
-        cameraRight.Normalize();
-
-        Vector3 move =
-            cameraForward * movementY +
-            cameraRight * movementX;
-
-        transform.Translate(move * moveSpeed * Time.deltaTime, Space.World);
-
-        // Rotate character toward movement
-        if (move.sqrMagnitude > 0.001f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(move);
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                targetRotation,
-                Time.deltaTime * 10f
-            );
-        }
-
-        animator.SetBool("IsRunning", move.sqrMagnitude > 0.001f);
+        HandleCameraRotation();
+        HandleMovement();
+        HandleAnimation();
     }
 
     void LateUpdate()
     {
         if (mainCamera == null) return;
 
+        UpdateCameraPosition();
+    }
+
+    private void HandleCameraRotation()
+    {
+        // Update yaw and pitch based on input
+        cameraYaw += lookInput.x * cameraRotateSpeed * Time.deltaTime;
+        cameraPitch -= lookInput.y * cameraRotateSpeed * Time.deltaTime;
+        cameraPitch = Mathf.Clamp(cameraPitch, minPitch, maxPitch);
+    }
+
+    private void HandleMovement()
+    {
+        // Camera-relative movement
+        Vector3 forward = mainCamera.transform.forward;
+        forward.y = 0;
+        forward.Normalize();
+
+        Vector3 right = mainCamera.transform.right;
+        right.y = 0;
+        right.Normalize();
+
+        Vector3 move = forward * movementInput.y + right * movementInput.x;
+
+        // Normalize diagonal movement
+        if (move.sqrMagnitude > 1f)
+            move.Normalize();
+
+        // Apply movement
+        transform.position += move * moveSpeed * Time.deltaTime;
+
+        // Rotate character toward movement
+        if (move.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(move);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+    }
+
+    private void HandleAnimation()
+    {
+        animator.SetBool("IsRunning", movementInput.sqrMagnitude > 0.001f);
+    }
+
+    private void UpdateCameraPosition()
+    {
+        // Orbiting camera
         Quaternion rotation = Quaternion.Euler(cameraPitch, cameraYaw, 0);
+        Vector3 desiredPosition = transform.position - rotation * Vector3.forward * cameraDistance + Vector3.up * 1.2f;
 
-        Vector3 desiredPosition =
-            transform.position +
-            rotation * new Vector3(0, 0, -cameraDistance);
-
-        mainCamera.transform.position = Vector3.Lerp(
-            mainCamera.transform.position,
-            desiredPosition,
-            Time.deltaTime * cameraSmoothSpeed
-        );
-
-        mainCamera.transform.LookAt(
-            transform.position + Vector3.up * 1.2f
-        );
+        mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, desiredPosition, cameraSmoothSpeed * Time.deltaTime);
+        mainCamera.transform.LookAt(transform.position + Vector3.up * 1.2f);
     }
 }
