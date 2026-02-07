@@ -18118,6 +18118,11 @@ MonoBehaviour:
   m_DefaultActionMap: 
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 1704015173}
+--- !u!4 &582250607 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: de13a7420582ded45a8d7d3f96889aca, type: 3}
+  m_PrefabInstance: {fileID: 676549837}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &582598600
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -49954,6 +49959,57 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 729697691}
   m_SourcePrefab: {fileID: 100100000, guid: d4cfcf659200d7548b90a5580c3ab18f, type: 3}
+--- !u!1 &1485965523
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1485965525}
+  - component: {fileID: 1485965524}
+  m_Layer: 0
+  m_Name: QuestManager*
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1485965524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1485965523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6663d03e1c2527f4fa26f1cc82088f0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaguetteQuest
+  squalala: {fileID: 221136304}
+  squalalabaker: {fileID: 1564420653}
+  baguette: {fileID: 548312021}
+  player: {fileID: 582250607}
+  interactDistance: 1
+  textHeight: 1
+  textSize: 0.01
+--- !u!4 &1485965525
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1485965523}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 60.52576, y: -0.00001, z: 16.46168}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1489583954 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: 2509cc5763ca17f4598bf61fd585a93e, type: 3}
@@ -72984,3 +73040,4 @@ SceneRoots:
   - {fileID: 1156115812}
   - {fileID: 221136304}
   - {fileID: 1564420653}
+  - {fileID: 1485965525}
