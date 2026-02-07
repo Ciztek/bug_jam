@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     // Input
     private Vector2 movementInput;
     private Vector2 lookInput;
+    private bool jumpInput;
 
     // Movement settings
     public float moveSpeed = 4f;
@@ -33,16 +34,13 @@ public class PlayerController : MonoBehaviour
     }
 
     // Move input (WASD / ZQSD)
-    void OnMove(InputValue value)
-    {
-        movementInput = value.Get<Vector2>();
-    }
+    void OnMove(InputValue value) => movementInput = value.Get<Vector2>();
 
     // Look input (mouse or arrow keys)
-    void OnLook(InputValue value)
-    {
-        lookInput = value.Get<Vector2>();
-    }
+    void OnLook(InputValue value) => lookInput = value.Get<Vector2>();
+
+    // Jump input (spacebar)
+    void OnJump(InputValue value) => jumpInput = value.isPressed;
 
     void Update()
     {
@@ -50,6 +48,7 @@ public class PlayerController : MonoBehaviour
 
         HandleCameraRotation();
         HandleMovement();
+        HandleJump();
         HandleAnimation();
     }
 
@@ -96,9 +95,24 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void HandleJump()
+    {
+        if (jumpInput && IsGrounded())
+        {
+            transform.position += Vector3.up * 0.5f;
+            jumpInput = false; // Reset jump input to prevent continuous jumping
+        }
+    }
+
+    private bool IsGrounded()
+    {
+        return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.2f);
+    }
+
     private void HandleAnimation()
     {
         animator.SetBool("IsRunning", movementInput.sqrMagnitude > 0.001f);
+        animator.SetBool("IsJumping", jumpInput);
     }
 
     private void UpdateCameraPosition()
