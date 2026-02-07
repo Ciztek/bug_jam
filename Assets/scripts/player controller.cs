@@ -53,7 +53,11 @@ public class PlayerController : MonoBehaviour
     void OnMove(InputValue value)   => movementInput = value.Get<Vector2>();
     void OnLook(InputValue value)   => lookInput = value.Get<Vector2>();
     void OnJump(InputValue value)   => jumpInput = value.isPressed;
-    void OnSprint(InputValue value) => sprintInput = value.isPressed;
+    
+    void OnSprint(InputValue value)
+    {
+        sprintInput = value.isPressed;
+    }
 
     void Update()
     {
@@ -83,6 +87,8 @@ public class PlayerController : MonoBehaviour
         isIdle =
             idleTimer >= idleDelay &&
             new Vector3(currentVelocity.x, 0f, currentVelocity.z).sqrMagnitude < 0.05f;
+        if (isIdle)
+            sprintInput = false; // Force sprint off when idle
     }
 
     // ===== CAMERA =====
@@ -131,18 +137,26 @@ public class PlayerController : MonoBehaviour
         float targetSpeed =
             sprintInput && !isIdle ? sprintSpeed : walkSpeed;
 
-        Vector3 targetVelocity = inputDirection * targetSpeed;
+
+        Vector3 targetVelocityHorizontal = inputDirection * targetSpeed;
 
         float accelRate =
             inputDirection.sqrMagnitude > 0.01f
                 ? acceleration
                 : deceleration;
 
-        currentVelocity = Vector3.MoveTowards(
-            currentVelocity,
-            targetVelocity,
+        // Séparer la vélocité horizontale de la verticale
+        Vector3 horizontalVelocity = new Vector3(currentVelocity.x, 0f, currentVelocity.z);
+        
+        horizontalVelocity = Vector3.MoveTowards(
+            horizontalVelocity,
+            targetVelocityHorizontal,
             accelRate * Time.deltaTime
         );
+
+        // Restaurer la composante Y (gérée par HandleJump)
+        currentVelocity.x = horizontalVelocity.x;
+        currentVelocity.z = horizontalVelocity.z;
 
         transform.position += currentVelocity * Time.deltaTime;
 
@@ -199,15 +213,15 @@ public class PlayerController : MonoBehaviour
         {
             normalizedSpeed = 0f;
         }
-        else if (sprintInput && !isIdle)
+        else if (planarSpeed <= walkSpeed)
         {
-            // Sprinting: map from walkSpeed to sprintSpeed → 1.0 to 2.0
-            normalizedSpeed = 1f + Mathf.Clamp01((planarSpeed - walkSpeed) / (sprintSpeed - walkSpeed));
+            // Walking: map from 0 to walkSpeed → 0.0 to 1.0
+            normalizedSpeed = Mathf.Clamp01(planarSpeed / walkSpeed);
         }
         else
         {
-            // Walking/Running: map from 0 to walkSpeed → 0.0 to 1.0
-            normalizedSpeed = Mathf.Clamp01(planarSpeed / walkSpeed);
+            // Sprinting: map from walkSpeed to sprintSpeed → 1.0 to 2.0
+            normalizedSpeed = 1f + Mathf.Clamp01((planarSpeed - walkSpeed) / (sprintSpeed - walkSpeed));
         }
 
         animator.SetFloat("Speed", normalizedSpeed, 0.1f, Time.deltaTime);
