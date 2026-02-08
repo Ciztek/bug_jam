@@ -6,8 +6,11 @@ public class FallDetector : MonoBehaviour
     [Tooltip("Hauteur en dessous de laquelle le joueur est considere comme tombe")]
     public float fallThreshold = -10f;
 
-    [Tooltip("Hauteur a laquelle teleporter le joueur apres une chute")]
-    public float respawnHeight = 50f;
+    [Tooltip("Distance maximale pour chercher le sol au-dessus de la derniere position")]
+    public float maxRaycastDistance = 200f;
+
+    [Tooltip("Hauteur au-dessus du sol pour teleporter le joueur")]
+    public float heightAboveGround = 2f;
 
     [Tooltip("Delai avant de teleporter le joueur (pour laisser le temps au son de jouer)")]
     public float respawnDelay = 1.5f;
@@ -86,15 +89,39 @@ public class FallDetector : MonoBehaviour
         if (player == null)
             return;
 
-        // Teleporter le joueur au-dessus de sa derniere position (X, Z) mais a une hauteur fixe
-        Vector3 respawnPosition = new Vector3(lastSafePosition.x, respawnHeight, lastSafePosition.z);
-        player.position = respawnPosition;
+        // Chercher le sol en lancant un raycast depuis le haut vers le bas a la derniere position sure
+        Vector3 raycastStart = new Vector3(lastSafePosition.x, lastSafePosition.y + maxRaycastDistance, lastSafePosition.z);
+        RaycastHit hit;
 
-        // Reinitialiser le CharacterController si present (pour eviter des bugs de physique)
+        Vector3 respawnPosition;
+
+        // Lancer un raycast vers le bas pour trouver le sol
+        if (Physics.Raycast(raycastStart, Vector3.down, out hit, maxRaycastDistance * 2))
+        {
+            // Teleporter le joueur legerement au-dessus du sol trouve
+            respawnPosition = hit.point + Vector3.up * heightAboveGround;
+            Debug.Log($"Sol trouve a: {hit.point}, teleportation a: {respawnPosition}");
+        }
+        else
+        {
+            // Si aucun sol n'est trouve, utiliser la derniere position sure + une hauteur fixe
+            respawnPosition = lastSafePosition + Vector3.up * 5f;
+            Debug.LogWarning($"Aucun sol trouve, utilisation de la derniere position sure: {respawnPosition}");
+        }
+
+        // Desactiver temporairement le CharacterController pour la teleportation
         CharacterController characterController = player.GetComponent<CharacterController>();
         if (characterController != null)
         {
             characterController.enabled = false;
+        }
+
+        // Teleporter le joueur
+        player.position = respawnPosition;
+
+        // Reactiver le CharacterController
+        if (characterController != null)
+        {
             characterController.enabled = true;
         }
 
@@ -120,11 +147,16 @@ public class FallDetector : MonoBehaviour
         Gizmos.DrawLine(new Vector3(-1000, fallThreshold, -1000), new Vector3(-1000, fallThreshold, 1000));
         Gizmos.DrawLine(new Vector3(1000, fallThreshold, -1000), new Vector3(1000, fallThreshold, 1000));
 
-        // Dessiner la hauteur de respawn
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(new Vector3(-1000, respawnHeight, -1000), new Vector3(1000, respawnHeight, -1000));
-        Gizmos.DrawLine(new Vector3(-1000, respawnHeight, 1000), new Vector3(1000, respawnHeight, 1000));
-        Gizmos.DrawLine(new Vector3(-1000, respawnHeight, -1000), new Vector3(-1000, respawnHeight, 1000));
-        Gizmos.DrawLine(new Vector3(1000, respawnHeight, -1000), new Vector3(1000, respawnHeight, 1000));
+        // Dessiner la derniere position sure si disponible
+        if (Application.isPlaying && lastSafePosition != Vector3.zero)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(lastSafePosition, 1f);
+            
+            // Dessiner le raycast qui sera utilise pour trouver le sol
+            Gizmos.color = Color.yellow;
+            Vector3 rayStart = new Vector3(lastSafePosition.x, lastSafePosition.y + maxRaycastDistance, lastSafePosition.z);
+            Gizmos.DrawLine(rayStart, rayStart + Vector3.down * maxRaycastDistance * 2);
+        }
     }
 }
