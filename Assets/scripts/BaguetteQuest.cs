@@ -203,6 +203,13 @@ public class BaguetteQuest : MonoBehaviour
                 currentStep = QuestStep.Finished;
                 dialogTimer = dialogDuration;
 
+                // Jouer le son Antoine Daniel (Dragon Ball) quand la quete est terminee
+                AudioPlayerManager audioManager = FindObjectOfType<AudioPlayerManager>();
+                if (audioManager != null)
+                {
+                    audioManager.PlayAntoineDaniel();
+                }
+
                 // Nettoyer apres quelques secondes
                 Invoke("CleanupTexts", dialogDuration);
             }
