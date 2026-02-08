@@ -80,10 +80,13 @@ public class AudioPlayerManager : MonoBehaviour
         {
             musicMain.clip = overworldMusic;
             musicSecondary.clip = Visitor;
+            musicMain.volume = 0.65f;
+            musicSecondary.volume = 0.255f;
             musicMain.Play();
             musicSecondary.Play();
         } else {
             musicMain.clip = Random.Range(0, 2) == 0 ? overworldMusic : Visitor;
+            musicMain.volume = 0.85f;
             musicMain.Play();
         }
     }
