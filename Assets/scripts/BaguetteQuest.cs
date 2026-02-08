@@ -135,6 +135,7 @@ public class BaguetteQuest : MonoBehaviour
                 squalalaHintText.text = "";
                 currentStep = QuestStep.GoToBaker;
                 dialogTimer = dialogDuration;
+                Camera.main.GetComponent<AudioPlayerManager>().PlaySqualala();
 
                 // Afficher hint chez le baker
                 bakerHintText.text = "[E] Prendre la baguette";
@@ -170,7 +171,7 @@ public class BaguetteQuest : MonoBehaviour
                 bakerHintText.text = "";
                 currentStep = QuestStep.ReturnToSqualala;
                 dialogTimer = dialogDuration;
-
+                Camera.main.GetComponent<AudioPlayerManager>().PlaySqualala();
                 // Afficher hint chez squalala
                 squalalaHintText.text = "[E] Donner la baguette";
             }

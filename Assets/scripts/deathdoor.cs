@@ -32,10 +32,12 @@ public class deathdoor : MonoBehaviour
     private TextMesh hintText;
     private PlayerInput playerInput;
     private InputAction interactAction;
+    private Camera mainCamera;
 
     void Start()
     {
         // Si le joueur n'est pas assigne, le chercher
+        mainCamera = Camera.main;
         if (player == null)
         {
             GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -101,6 +103,7 @@ public class deathdoor : MonoBehaviour
 
     private void OpenDoor()
     {
+        mainCamera.GetComponent<AudioPlayerManager>().PlayGameOver();
         hasTriggered = true;
         hintText.text = "";
         TriggerDeath();
