@@ -57613,7 +57613,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioPlayerManager
   Scorpion: {fileID: 8300000, guid: 6b030448f2b018948a4f2c7e7821e4ba, type: 3}
-  Segaaaaa: {fileID: 8300000, guid: 84c0b97fbd9b7f743a08d5fdfde3b41d, type: 3}
+  Segaaaaa: {fileID: 8300000, guid: 5e18ddb44b15c3b40941d29dae261c0e, type: 3}
   SteveDamage: {fileID: 8300000, guid: 2ecd49101647f4e48a870c04bc4001be, type: 3}
   AntoineDaniel: {fileID: 8300000, guid: b3dde9d4c309a6e488484fb7a2d5489c, type: 3}
   GameOver: {fileID: 8300000, guid: 84c0b97fbd9b7f743a08d5fdfde3b41d, type: 3}
