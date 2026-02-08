@@ -191,8 +191,7 @@ public class BaguetteQuest : MonoBehaviour
         }
 
         // Afficher hint quand le joueur est proche de squalala
-        if (distToSqualala <= interactDistance)
-        {
+        if (distToSqualala <= interactDistance) {
             squalalaHintText.text = "[E] Donner la baguette";
 
             if (IsInteractPressed())
@@ -213,9 +212,7 @@ public class BaguetteQuest : MonoBehaviour
                 // Nettoyer apres quelques secondes
                 Invoke("CleanupTexts", dialogDuration);
             }
-        }
-        else
-        {
+        } else {
             squalalaHintText.text = "";
         }
     }
