@@ -67,5 +67,6 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "bugged.slnx"
+    "dotnet.defaultSolution": "bugged.slnx",
+    "dotnet.preferCSharpExtension": true
 }

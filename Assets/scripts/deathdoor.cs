@@ -103,7 +103,7 @@ public class deathdoor : MonoBehaviour
 
     private void OpenDoor()
     {
-        mainCamera.GetComponent<AudioPlayerManager>().PlayGameOver();
+        mainCamera.GetComponent<AudioPlayerManager>().PlaySFX(SFXType.GameOver);
         hasTriggered = true;
         hintText.text = "";
         TriggerDeath();
