@@ -3,89 +3,94 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class AudioPlayerManager: MonoBehaviour
+public class AudioPlayerManager : MonoBehaviour
 {
     private static AudioPlayerManager instance = null;
+
+    // SFX
     public AudioClip Scorpion;
     public AudioClip Segaaaaa;
     public AudioClip SteveDamage;
     public AudioClip AntoineDaniel;
     public AudioClip GameOver;
-    public AudioClip overworldMusic;
-    private AudioSource audio;
     public AudioClip Squalala;
+
+    // Overworld music
+    public AudioClip overworldMusic;
+    public AudioClip Visitor;
+
+    // AudioSources
+    private AudioSource musicMain;      // main music layer
+    private AudioSource musicSecondary; // secondary music layer for overlap
+    private AudioSource sfxSource;      // plays sound effects
 
     private void Awake()
     {
         if (instance == null)
-        { 
+        {
             instance = this;
             DontDestroyOnLoad(gameObject);
             return;
         }
-        if (instance == this) return; 
+        if (instance == this) return;
         Destroy(gameObject);
     }
 
     void Start()
     {
-        audio = GetComponent<AudioSource>();
-        audio.clip = Segaaaaa;
-        audio.Play();
+        // Initialize AudioSources
+        musicMain = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
+        musicSecondary = gameObject.AddComponent<AudioSource>();
+        sfxSource = gameObject.AddComponent<AudioSource>();
+
+        // Loop music
+        musicMain.loop = true;
+        musicSecondary.loop = true;
+
+        // Adjust volumes
+        musicMain.volume = 1f;
+        musicSecondary.volume = 0.3f;
+        sfxSource.volume = 1f;
+
+        // Start initial music
+        PlaySegaaaaa();
+        PlayOverworldMusic();
     }
 
-    public void PlayScorpion()
+    private void PlaySfx(AudioClip clip)
     {
-        audio.Stop();
-        audio.clip = Scorpion;
-        audio.Play();
+        sfxSource.PlayOneShot(clip);
     }
 
-    public void PlaySegaaaaa()
-    {
-        audio.Stop();
-        audio.clip = Segaaaaa;
-        audio.Play();
-    }
+    // SFX public methods
+    public void PlayScorpion()      { PlaySfx(Scorpion); }
+    public void PlaySegaaaaa()      { PlaySfx(Segaaaaa); }
+    public void PlaySteveDamage()   { PlaySfx(SteveDamage); }
+    public void PlayAntoineDaniel() { PlaySfx(AntoineDaniel); }
+    public void PlayGameOver()      { PlaySfx(GameOver); }
+    public void PlaySqualala()      { PlaySfx(Squalala); }
 
-    public void PlaySteveDamage()
-    {
-        audio.Stop();
-        audio.clip = SteveDamage;
-        audio.Play();
-    }
-
-    public void PlayAntoineDaniel()
-    {
-        audio.Stop();
-        audio.clip = AntoineDaniel;
-        audio.Play();
-    }
-
-    public void PlayGameOver()
-    {
-        audio.Stop();
-        audio.clip = GameOver;
-        audio.Play();
-    }
-
+    // Overworld music with 1/4 chance to overlap
     public void PlayOverworldMusic()
     {
-        audio.Stop();
-        audio.clip = overworldMusic;
-        audio.Play();
+        musicMain.Stop();
+        musicSecondary.Stop();
+
+        if (Random.Range(0, 4) == 0) // 1/4 chance
+        {
+            musicMain.clip = overworldMusic;
+            musicSecondary.clip = Visitor;
+            musicMain.Play();
+            musicSecondary.Play();
+        } else {
+            musicMain.clip = Random.Range(0, 2) == 0 ? overworldMusic : Visitor;
+            musicMain.Play();
+        }
     }
 
-    public void PlaySqualala()
+    void Update()
     {
-        audio.Stop();
-        audio.clip = Squalala;
-        audio.Play();
-    }
-
-    public void Update()
-    {
-        if (!audio.isPlaying)
+        if (!musicMain.isPlaying && !musicSecondary.isPlaying)
         {
             PlayOverworldMusic();
         }
