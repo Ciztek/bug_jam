@@ -5884,6 +5884,54 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 069faa75324807b4d99f059f6622d7c2, type: 3}
+--- !u!1 &191477570
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 191477572}
+  - component: {fileID: 191477571}
+  m_Layer: 0
+  m_Name: FallDetector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &191477571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 191477570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bee41bb42cdbcfd40b1748b6b5e9200c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FallDetector
+  fallThreshold: -10
+  respawnHeight: 50
+  respawnDelay: 1.5
+  player: {fileID: 582250607}
+--- !u!4 &191477572
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 191477570}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 90.91747, y: 2.34205, z: 12.21063}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &192832891 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: 120449a04911a924ca1239be382ff0be, type: 3}
@@ -57420,10 +57468,11 @@ MonoBehaviour:
   Scorpion: {fileID: 8300000, guid: 84c0b97fbd9b7f743a08d5fdfde3b41d, type: 3}
   Segaaaaa: {fileID: 8300000, guid: 84c0b97fbd9b7f743a08d5fdfde3b41d, type: 3}
   SteveDamage: {fileID: 8300000, guid: 84c0b97fbd9b7f743a08d5fdfde3b41d, type: 3}
-  AntoineDaniel: {fileID: 8300000, guid: 84c0b97fbd9b7f743a08d5fdfde3b41d, type: 3}
+  AntoineDaniel: {fileID: 8300000, guid: b3dde9d4c309a6e488484fb7a2d5489c, type: 3}
   GameOver: {fileID: 8300000, guid: 84c0b97fbd9b7f743a08d5fdfde3b41d, type: 3}
-  overworldMusic: {fileID: 8300000, guid: 84c0b97fbd9b7f743a08d5fdfde3b41d, type: 3}
   Squalala: {fileID: 8300000, guid: 0772ea0934f6da4408fd4ca7f3b0451b, type: 3}
+  overworldMusic: {fileID: 8300000, guid: 84c0b97fbd9b7f743a08d5fdfde3b41d, type: 3}
+  Visitor: {fileID: 0}
 --- !u!1001 &1704196083
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -73349,3 +73398,4 @@ SceneRoots:
   - {fileID: 1564420653}
   - {fileID: 1485965525}
   - {fileID: 1933678315}
+  - {fileID: 191477572}
