@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 public class combatSystem : MonoBehaviour
 {
+    private Camera mainCamera;
     [Header("Combat Settings")]
     [Tooltip("Damage dealt to enemies per attack")]
     public int attackDamage = 25;
@@ -28,6 +29,7 @@ public class combatSystem : MonoBehaviour
 
     void Start()
     {
+        mainCamera = Camera.main;
         animator = GetComponent<Animator>();
         
         // If no layer mask is set, try to detect all colliders
@@ -79,6 +81,7 @@ public class combatSystem : MonoBehaviour
                 // Destroy enemy if health reaches 0
                 if (enemy.health <= 0)
                 {
+                    mainCamera.GetComponent<AudioPlayerManager>().PlayScorpion();
                     Destroy(collider.gameObject);
                     Debug.Log($"{collider.gameObject.name} has been defeated!");
                 }

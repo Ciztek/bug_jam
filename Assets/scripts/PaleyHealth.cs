@@ -45,5 +45,6 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log("Player died!");
         mainCamera.GetComponent<AudioPlayerManager>().PlayScorpion();
         Destroy(gameObject);
+        mainCamera.GetComponent<AudioPlayerManager>().PlayGameOver();
     }
 }
